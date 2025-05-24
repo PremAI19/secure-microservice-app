@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-api
+  template:
+    metadata:
+      labels:
+        app: user-api
+    spec:
+      containers:
+      - name: user-api
+        image: <your-ecr-uri>/user-api:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secrets
+              key: MONGO_URI
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-api
+spec:
+  selector:
+    app: user-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
