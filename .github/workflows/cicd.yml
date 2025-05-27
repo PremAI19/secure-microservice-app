@@ -52,6 +52,14 @@ jobs:
           image-ref: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
           format: table
 
+      - name: Install Docker Scout
+        run: |
+         curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Run Docker Scout Quickview
+        run: |
+          docker scout quickview 835990278455.dkr.ecr.us-east-1.amazonaws.com/product-api:${{ env.IMAGE_TAG }}
+
       - name: Docker Scan (Docker Scout)
         run: |
           docker scout quickview ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
